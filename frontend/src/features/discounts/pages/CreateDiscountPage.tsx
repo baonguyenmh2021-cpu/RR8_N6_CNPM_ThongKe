@@ -5,6 +5,7 @@ import axios from 'axios';
 import DiscountNavigation from '../components/DiscountNavigation';
 
 
+
 import {
     Alert,
     Badge,
@@ -33,7 +34,6 @@ import type {
     DiscountType,
 } from '../types/Discount';
 
-import styles from './CreateDiscountPage.module.css';
 
 interface DiscountForm {
     code: string;
@@ -269,8 +269,6 @@ export default function CreateDiscountPage() {
             {/* Tiêu đề */}
             <Box>
 
-                
-                
                 <Title order={2}>
                     Tạo mã chiết khấu
                 </Title>
@@ -280,8 +278,9 @@ export default function CreateDiscountPage() {
                     áp dụng cho Home Rent.
                 </Text>
                 
-                <DiscountNavigation />
+                
             </Box>
+            <DiscountNavigation />
 
 
             {/* Thông báo lỗi */}

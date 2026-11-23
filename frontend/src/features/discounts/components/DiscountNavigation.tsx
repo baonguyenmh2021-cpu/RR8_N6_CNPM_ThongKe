@@ -14,10 +14,24 @@ export default function DiscountNavigation() {
             label: 'Hiệu quả mã chiết khấu',
             path: '/discounts/effectiveness',
         },
+        {
+            label: 'Quản lý mã chiết khấu',
+            path: '/discounts/manage',
+        },
     ];
 
     return (
-        <Group gap="xs" wrap="wrap">
+        <Group
+            grow
+            gap="sm"
+            wrap="nowrap"
+            style={{
+                width: '100%',
+                maxWidth: 780,
+                marginTop: 12,
+                marginBottom: 24,
+            }}
+        >
             {items.map((item) => {
                 const active = pathname === item.path;
 
@@ -26,9 +40,15 @@ export default function DiscountNavigation() {
                         key={item.path}
                         component={Link}
                         to={item.path}
+                        fullWidth
+                        h={42}
+                        px="sm"
                         size="sm"
                         radius="sm"
                         variant={active ? 'light' : 'subtle'}
+                        style={{
+                            whiteSpace: 'nowrap',
+                        }}
                     >
                         {item.label}
                     </Button>

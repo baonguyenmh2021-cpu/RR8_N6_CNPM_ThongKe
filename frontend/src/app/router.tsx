@@ -14,6 +14,7 @@ import CategoryRevenuePage from '../features/revenue/pages/CategoryRevenuePage';
 import ClosedRevenuePage from '../features/revenue/pages/ClosedRevenuePage';
 import CreateDiscountPage from '../features/discounts/pages/CreateDiscountPage';
 import DiscountEffectivenessPage from '../features/discounts/pages/DiscountEffectivenessPage';
+import ManageDiscountPage from '../features/discounts/pages/ManageDiscountPage';
 
 export default function AppRouter() {
     return (
@@ -51,12 +52,19 @@ export default function AppRouter() {
                         path="discounts"
                         element={<CreateDiscountPage />}
                     />
-                    
+
                     {/* US-06: Hiệu quả mã chiết khấu */}
                     <Route
                         path="discounts/effectiveness"
                         element={<DiscountEffectivenessPage />}
                     />
+
+                    {/* US-07: Quản lý mã chiết khấu */}
+                    <Route
+                        path="discounts/manage"
+                        element={<ManageDiscountPage />}
+                    />
+                    
                     <Route
                         path="occupancy"
                         element={
