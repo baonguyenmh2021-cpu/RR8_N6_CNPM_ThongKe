@@ -14,10 +14,14 @@ export default function RevenueNavigation() {
             label: 'Theo năm',
             path: '/revenue/yearly',
         },
+        {
+            label: 'Theo loại phòng',
+            path: '/revenue/categories',
+        },
     ];
 
     return (
-        <Group gap="xs">
+        <Group gap="xs" wrap="wrap">
             {items.map((item) => {
                 const isActive = pathname === item.path;
 

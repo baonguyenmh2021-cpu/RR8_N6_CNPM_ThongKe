@@ -10,6 +10,7 @@ import DashboardLayout from '../layouts/DashboardLayout';
 import RevenuePage from '../features/revenue/pages/RevenuePage';
 import ComingSoonPage from '../pages/ComingSoonPage';
 import YearlyRevenuePage from '../features/revenue/pages/YearlyRevenuePage';
+import CategoryRevenuePage from '../features/revenue/pages/CategoryRevenuePage';
 
 export default function AppRouter() {
     return (
@@ -31,6 +32,11 @@ export default function AppRouter() {
                         element={<YearlyRevenuePage />}
                     />
 
+                    {/* US-03: Doanh thu theo loại phòng */}
+                    <Route
+                        path="revenue/categories"
+                        element={<CategoryRevenuePage />}
+                    />
                     <Route
                         path="discounts"
                         element={
