@@ -268,9 +268,6 @@ export default function RevenuePage() {
                                     Báo cáo tháng {period.month}/{period.year}
                                 </Text>
 
-                                <Text size="xs" c="dimmed" mt={4}>
-                                    Dữ liệu lấy từ hệ thống Spring Boot
-                                </Text>
                             </Box>
                         </Group>
 

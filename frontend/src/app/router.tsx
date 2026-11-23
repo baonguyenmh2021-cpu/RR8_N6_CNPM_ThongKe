@@ -11,6 +11,8 @@ import RevenuePage from '../features/revenue/pages/RevenuePage';
 import ComingSoonPage from '../pages/ComingSoonPage';
 import YearlyRevenuePage from '../features/revenue/pages/YearlyRevenuePage';
 import CategoryRevenuePage from '../features/revenue/pages/CategoryRevenuePage';
+import ClosedRevenuePage from '../features/revenue/pages/ClosedRevenuePage';
+import CreateDiscountPage from '../features/discounts/pages/CreateDiscountPage';
 
 export default function AppRouter() {
     return (
@@ -37,11 +39,16 @@ export default function AppRouter() {
                         path="revenue/categories"
                         element={<CategoryRevenuePage />}
                     />
+
+                    {/* US-04: Xem báo cáo doanh thu đã chốt */}
+                    <Route
+                        path="revenue/closed"
+                        element={<ClosedRevenuePage />}
+                    />
+                    {/* US-05: Tạo mã chiết khấu */}
                     <Route
                         path="discounts"
-                        element={
-                            <ComingSoonPage title="Mã chiết khấu" />
-                        }
+                        element={<CreateDiscountPage />}
                     />
 
                     <Route

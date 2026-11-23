@@ -18,6 +18,10 @@ export default function RevenueNavigation() {
             label: 'Theo loại phòng',
             path: '/revenue/categories',
         },
+        {
+            label: 'Đã chốt',
+            path: '/revenue/closed',
+        },
     ];
 
     return (

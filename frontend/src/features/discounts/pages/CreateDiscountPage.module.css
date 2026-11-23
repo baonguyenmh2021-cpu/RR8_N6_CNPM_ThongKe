@@ -1,0 +1,12 @@
+.pageTitle {
+    color: var(--rr8-heading);
+    font-size: 25px;
+    font-weight: 600;
+    letter-spacing: -0.4px;
+}
+
+@media (max-width: 768px) {
+    .pageTitle {
+        font-size: 22px;
+    }
+}
