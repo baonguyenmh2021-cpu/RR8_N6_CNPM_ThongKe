@@ -2,6 +2,8 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
 import axios from 'axios';
+import DiscountNavigation from '../components/DiscountNavigation';
+
 
 import {
     Alert,
@@ -266,7 +268,10 @@ export default function CreateDiscountPage() {
         <Stack gap="lg">
             {/* Tiêu đề */}
             <Box>
-                <Title order={2} className={styles.pageTitle}>
+
+                
+                
+                <Title order={2}>
                     Tạo mã chiết khấu
                 </Title>
 
@@ -274,6 +279,8 @@ export default function CreateDiscountPage() {
                     Thiết lập chương trình giảm giá và điều kiện
                     áp dụng cho Home Rent.
                 </Text>
+                
+                <DiscountNavigation />
             </Box>
 
 
