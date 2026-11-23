@@ -7,96 +7,148 @@ import {
 } from 'react-router-dom';
 
 import DashboardLayout from '../layouts/DashboardLayout';
+
 import RevenuePage from '../features/revenue/pages/RevenuePage';
-import ComingSoonPage from '../pages/ComingSoonPage';
 import YearlyRevenuePage from '../features/revenue/pages/YearlyRevenuePage';
 import CategoryRevenuePage from '../features/revenue/pages/CategoryRevenuePage';
 import ClosedRevenuePage from '../features/revenue/pages/ClosedRevenuePage';
+
 import CreateDiscountPage from '../features/discounts/pages/CreateDiscountPage';
 import DiscountEffectivenessPage from '../features/discounts/pages/DiscountEffectivenessPage';
 import ManageDiscountPage from '../features/discounts/pages/ManageDiscountPage';
 
+import OccupancyPage from '../features/occupancy/pages/OccupancyPage';
+
+import ComingSoonPage from '../pages/ComingSoonPage';
+
+import { DemoRoleProvider } from '../features/auth/context/DemoRoleContext';
+
+import DemoRoleGuard from '../features/auth/guards/DemoRoleGuard';
+
 export default function AppRouter() {
     return (
-        <BrowserRouter>
-            <Routes>
-                <Route path="/" element={<DashboardLayout />}>
+        <DemoRoleProvider>
+            <BrowserRouter>
+                <Routes>
                     <Route
-                        index
-                        element={<Navigate to="/revenue" replace />}
-                    />
+                        path="/"
+                        element={<DashboardLayout />}
+                    >
+                        <Route
+                            index
+                            element={
+                                <Navigate
+                                    to="/revenue"
+                                    replace
+                                />
+                            }
+                        />
 
-                    <Route
-                        path="revenue"
-                        element={<RevenuePage />}
-                    />
+                        {/* US-01: Doanh thu theo tháng */}
+                        <Route
+                            path="revenue"
+                            element={<RevenuePage />}
+                        />
 
-                    <Route
-                        path="revenue/yearly"
-                        element={<YearlyRevenuePage />}
-                    />
+                        {/* US-02: Doanh thu theo năm */}
+                        <Route
+                            path="revenue/yearly"
+                            element={<YearlyRevenuePage />}
+                        />
 
-                    {/* US-03: Doanh thu theo loại phòng */}
-                    <Route
-                        path="revenue/categories"
-                        element={<CategoryRevenuePage />}
-                    />
+                        {/* US-03: Doanh thu theo loại phòng */}
+                        <Route
+                            path="revenue/categories"
+                            element={<CategoryRevenuePage />}
+                        />
 
-                    {/* US-04: Xem báo cáo doanh thu đã chốt */}
-                    <Route
-                        path="revenue/closed"
-                        element={<ClosedRevenuePage />}
-                    />
-                    {/* US-05: Tạo mã chiết khấu */}
-                    <Route
-                        path="discounts"
-                        element={<CreateDiscountPage />}
-                    />
+                        {/* US-04: Chốt báo cáo - Admin */}
+                        <Route
+                            path="revenue/closed"
+                            element={
+                                <DemoRoleGuard
+                                    allowedRoles={['ADMIN']}
+                                >
+                                    <ClosedRevenuePage />
+                                </DemoRoleGuard>
+                            }
+                        />
 
-                    {/* US-06: Hiệu quả mã chiết khấu */}
-                    <Route
-                        path="discounts/effectiveness"
-                        element={<DiscountEffectivenessPage />}
-                    />
+                        {/* US-05: Tạo mã chiết khấu */}
+                        <Route
+                            path="discounts"
+                            element={
+                                <DemoRoleGuard
+                                    allowedRoles={['MANAGER']}
+                                >
+                                    <CreateDiscountPage />
+                                </DemoRoleGuard>
+                            }
+                        />
 
-                    {/* US-07: Quản lý mã chiết khấu */}
-                    <Route
-                        path="discounts/manage"
-                        element={<ManageDiscountPage />}
-                    />
-                    
-                    <Route
-                        path="occupancy"
-                        element={
-                            <ComingSoonPage title="Tỷ lệ lấp đầy" />
-                        }
-                    />
+                        {/* US-06: Hiệu quả mã chiết khấu */}
+                        <Route
+                            path="discounts/effectiveness"
+                            element={
+                                <DemoRoleGuard
+                                    allowedRoles={['MANAGER']}
+                                >
+                                    <DiscountEffectivenessPage />
+                                </DemoRoleGuard>
+                            }
+                        />
 
-                    <Route
-                        path="price-plans"
-                        element={
-                            <ComingSoonPage title="Kế hoạch giá" />
-                        }
-                    />
+                        {/* US-07: Quản lý mã chiết khấu */}
+                        <Route
+                            path="discounts/manage"
+                            element={
+                                <DemoRoleGuard
+                                    allowedRoles={['MANAGER']}
+                                >
+                                    <ManageDiscountPage />
+                                </DemoRoleGuard>
+                            }
+                        />
 
-                    <Route
-                        path="marketing"
-                        element={
-                            <ComingSoonPage title="Chiến lược marketing" />
-                        }
-                    />
+                        {/* US-08: Tỷ lệ lấp đầy */}
+                        <Route
+                            path="occupancy"
+                            element={<OccupancyPage />}
+                        />
 
-                    <Route
-                        path="*"
-                        element={
-                            <ComingSoonPage
-                                title="Không tìm thấy trang"
-                                description="Đường dẫn này không tồn tại trong RR8."
-                            />
-                        }
-                    />
-                </Route>
-            </Routes>
-        </BrowserRouter>
+                        {/* US-09 trở đi: Kế hoạch giá */}
+                        <Route
+                            path="price-plans"
+                            element={<ComingSoonPage title="Kế hoạch giá" />}
+                        />
+
+                        {/* Marketing: Manager */}
+                        <Route
+                            path="marketing"
+                            element={
+                                <DemoRoleGuard
+                                    allowedRoles={['MANAGER']}
+                                >
+                                    <ComingSoonPage
+                                        title="Chiến lược marketing"
+                                    />
+                                </DemoRoleGuard>
+                            }
+                        />
+
+                        {/* Không tìm thấy trang */}
+                        <Route
+                            path="*"
+                            element={
+                                <ComingSoonPage
+                                    title="Không tìm thấy trang"
+                                    description="Đường dẫn không tồn tại trong hệ thống."
+                                />
+                            }
+                        />
+                    </Route>
+                </Routes>
+            </BrowserRouter>
+        </DemoRoleProvider>
     );
 }

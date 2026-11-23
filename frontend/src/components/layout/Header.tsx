@@ -4,13 +4,18 @@ import {
     AppShell,
     Burger,
     Group,
+    SegmentedControl,
     Text,
     useMantineColorScheme,
 } from '@mantine/core';
 
 import { Moon, Sun } from 'lucide-react';
 
+import { useDemoRole } from '../../features/auth/hooks/useDemoRole';
+
 import styles from './Header.module.css';
+
+import type { DemoRole } from '../../features/auth/types/DemoRole';
 
 type HeaderProps = {
     opened: boolean;
@@ -24,12 +29,19 @@ export default function Header({
     const { colorScheme, toggleColorScheme } =
         useMantineColorScheme();
 
+    const { role, setRole } = useDemoRole();
+
     const isDark = colorScheme === 'dark';
 
     return (
         <AppShell.Header className={styles.header}>
-            <Group h="100%" px="lg" justify="space-between">
-                <Group gap="md">
+            <Group
+                h="100%"
+                px="lg"
+                justify="space-between"
+                wrap="nowrap"
+            >
+                <Group gap="md" wrap="nowrap">
                     <Burger
                         opened={opened}
                         onClick={onToggleMenu}
@@ -38,13 +50,43 @@ export default function Header({
                         aria-label="Mở hoặc đóng menu"
                     />
 
-                    <Text fw={700} size="lg" className={styles.logo}>
+                    <Text
+                        fw={700}
+                        size="lg"
+                        className={styles.logo}
+                    >
                         HOME RENT
                     </Text>
                 </Group>
 
-                <Group gap="md">
-                    <Text size="sm" c="dimmed">
+                <Group gap="sm" wrap="nowrap">
+                    <Group gap={6} visibleFrom="sm">
+                        <Text size="xs" c="dimmed">
+                            Chế độ:
+                        </Text>
+                    </Group>
+
+                    <SegmentedControl
+                        size="xs"
+                        radius="sm"
+                        value={role}
+                        onChange={(value) =>
+                            setRole(value as DemoRole)
+                        }
+                        data={[
+                            {
+                                label: 'Manager',
+                                value: 'MANAGER',
+                            },
+                            {
+                                label: 'Admin',
+                                value: 'ADMIN',
+                            },
+                        ]}
+                        aria-label="Chuyển đổi giao diện Manager và Admin"
+                    />
+
+                    <Text size="xs" c="dimmed" visibleFrom="md">
                         RR8
                     </Text>
 

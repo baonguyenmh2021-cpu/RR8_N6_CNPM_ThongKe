@@ -1,0 +1,38 @@
+.page {
+    width: 100%;
+    min-width: 0;
+}
+
+.pageTitle {
+    font-size: 1.5rem;
+    font-weight: 650;
+    line-height: 1.35;
+    color: var(--mantine-color-text);
+}
+
+.metricCard {
+    min-width: 0;
+    transition: border-color 150ms ease;
+}
+
+.metricCard:hover {
+    border-color: var(--mantine-primary-color-4);
+}
+
+.metricValue {
+    margin-top: 10px;
+    font-size: clamp(1.35rem, 2vw, 1.8rem);
+    line-height: 1.3;
+    font-weight: 650;
+    color: var(--mantine-color-text);
+    overflow-wrap: anywhere;
+}
+
+.revenueValue {
+    margin-top: 10px;
+    font-size: clamp(1rem, 1.5vw, 1.3rem);
+    line-height: 1.5;
+    font-weight: 650;
+    color: var(--mantine-color-text);
+    overflow-wrap: anywhere;
+}
