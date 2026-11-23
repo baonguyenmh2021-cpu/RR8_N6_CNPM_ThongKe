@@ -39,7 +39,9 @@ export default function Sidebar({
                 <Stack gap={4}>
                     {navigationItems.map((item) => {
                         const Icon = item.icon;
-                        const active = pathname === item.path;
+                        const active =
+                            pathname === item.path ||
+                            pathname.startsWith(`${item.path}/`);
 
                         return (
                             <NavLink

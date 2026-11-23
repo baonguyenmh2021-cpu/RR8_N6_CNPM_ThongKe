@@ -1,0 +1,24 @@
+.pageTitle {
+    color: var(--rr8-heading);
+    font-weight: 600;
+    font-size: 25px;
+    letter-spacing: -0.5px;
+}
+
+.metricValue {
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--mantine-color-text);
+    font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 768px) {
+    .pageTitle {
+        font-size: 22px;
+    }
+
+    .metricValue {
+        font-size: 20px;
+    }
+}

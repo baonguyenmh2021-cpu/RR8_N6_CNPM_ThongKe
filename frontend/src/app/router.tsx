@@ -9,6 +9,7 @@ import {
 import DashboardLayout from '../layouts/DashboardLayout';
 import RevenuePage from '../features/revenue/pages/RevenuePage';
 import ComingSoonPage from '../pages/ComingSoonPage';
+import YearlyRevenuePage from '../features/revenue/pages/YearlyRevenuePage';
 
 export default function AppRouter() {
     return (
@@ -23,6 +24,11 @@ export default function AppRouter() {
                     <Route
                         path="revenue"
                         element={<RevenuePage />}
+                    />
+
+                    <Route
+                        path="revenue/yearly"
+                        element={<YearlyRevenuePage />}
                     />
 
                     <Route
