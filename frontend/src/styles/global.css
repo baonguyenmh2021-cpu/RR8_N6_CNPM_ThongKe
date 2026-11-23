@@ -1,0 +1,41 @@
+/* ===== RR8 - Global Design Tokens ===== */
+
+:root {
+    font-family: Inter, "Segoe UI", Arial, sans-serif;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+}
+
+/* Light theme */
+html[data-mantine-color-scheme='light'] {
+    --rr8-page-bg: #f5f7fa;
+    --rr8-surface-bg: #ffffff;
+    --rr8-border: #e3e8ef;
+    --rr8-heading: #243247;
+}
+
+/* Dark theme */
+html[data-mantine-color-scheme='dark'] {
+    --rr8-page-bg: #151b24;
+    --rr8-surface-bg: #202936;
+    --rr8-border: #344052;
+    --rr8-heading: #e9eef5;
+}
+
+html,
+body,
+#root {
+    width: 100%;
+    min-height: 100%;
+    margin: 0;
+}
+
+body {
+    min-width: 320px;
+    background-color: var(--rr8-page-bg);
+    color: var(--mantine-color-text);
+}
+
+* {
+    box-sizing: border-box;
+}

@@ -1,0 +1,9 @@
+.header {
+    background-color: var(--rr8-surface-bg);
+    border-bottom: 1px solid var(--rr8-border);
+}
+
+.logo {
+    color: var(--rr8-heading);
+    letter-spacing: -0.3px;
+}

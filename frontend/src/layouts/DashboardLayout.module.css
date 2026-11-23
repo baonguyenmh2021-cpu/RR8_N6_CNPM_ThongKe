@@ -1,0 +1,11 @@
+.main {
+    min-height: calc(100vh - 64px);
+    background-color: var(--rr8-page-bg);
+    color: var(--mantine-color-text);
+}
+
+@media (max-width: 768px) {
+    .main {
+        padding: 16px;
+    }
+}

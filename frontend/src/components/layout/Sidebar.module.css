@@ -1,0 +1,15 @@
+.navbar {
+    background-color: var(--rr8-surface-bg);
+    border-right: 1px solid var(--rr8-border);
+}
+
+.menuItem {
+    border-radius: 6px;
+    font-weight: 500;
+    transition: background-color 150ms ease;
+}
+
+.menuItem[data-active] {
+    background-color: var(--mantine-primary-color-light);
+    color: var(--mantine-primary-color-filled);
+}
