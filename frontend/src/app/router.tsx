@@ -29,6 +29,10 @@ import CreatePricePlanPage from '../features/priceplans/pages/CreatePricePlanPag
 
 import PricePlanRoute from '../features/priceplans/pages/PricePlanRoute';
 
+import CreateMarketingStrategyPage from '../features/marketing/pages/CreateMarketingStrategyPage';
+
+import MarketingEffectivenessPage from '../features/marketing/pages/MarketingEffectivenessPage';
+
 export default function AppRouter() {
     return (
         <DemoRoleProvider>
@@ -129,12 +133,22 @@ export default function AppRouter() {
                             element={<PricePlanRoute />}
                         />
 
-                        {/* Marketing: Manager */}
+                        {/* US-11: Manager tạo chiến lược Marketing */}
                         <Route
                             path="marketing"
                             element={
                                 <DemoRoleGuard allowedRoles={['MANAGER']}>
-                                    <ComingSoonPage title="Chiến lược marketing" />
+                                    <CreateMarketingStrategyPage />
+                                </DemoRoleGuard>
+                            }
+                        />
+
+                        {/* US-12: Xem hiệu quả chiến lược Marketing */}
+                        <Route
+                            path="marketing/effectiveness"
+                            element={
+                                <DemoRoleGuard allowedRoles={['MANAGER']}>
+                                    <MarketingEffectivenessPage />
                                 </DemoRoleGuard>
                             }
                         />
