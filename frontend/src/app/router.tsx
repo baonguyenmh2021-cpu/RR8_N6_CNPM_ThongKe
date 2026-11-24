@@ -25,6 +25,10 @@ import { DemoRoleProvider } from '../features/auth/context/DemoRoleContext';
 
 import DemoRoleGuard from '../features/auth/guards/DemoRoleGuard';
 
+import CreatePricePlanPage from '../features/priceplans/pages/CreatePricePlanPage';
+
+import PricePlanRoute from '../features/priceplans/pages/PricePlanRoute';
+
 export default function AppRouter() {
     return (
         <DemoRoleProvider>
@@ -63,16 +67,19 @@ export default function AppRouter() {
                         />
 
                         {/* US-04: Chốt báo cáo - Admin */}
+
+                        {/* US-04: Xem và chốt báo cáo doanh thu */}
                         <Route
                             path="revenue/closed"
                             element={
                                 <DemoRoleGuard
-                                    allowedRoles={['ADMIN']}
+                                    allowedRoles={['MANAGER', 'ADMIN']}
                                 >
                                     <ClosedRevenuePage />
                                 </DemoRoleGuard>
                             }
                         />
+
 
                         {/* US-05: Tạo mã chiết khấu */}
                         <Route
@@ -116,22 +123,18 @@ export default function AppRouter() {
                             element={<OccupancyPage />}
                         />
 
-                        {/* US-09 trở đi: Kế hoạch giá */}
+                        {/* US-09 và US-10: Kế hoạch điều chỉnh giá */}
                         <Route
                             path="price-plans"
-                            element={<ComingSoonPage title="Kế hoạch giá" />}
+                            element={<PricePlanRoute />}
                         />
 
                         {/* Marketing: Manager */}
                         <Route
                             path="marketing"
                             element={
-                                <DemoRoleGuard
-                                    allowedRoles={['MANAGER']}
-                                >
-                                    <ComingSoonPage
-                                        title="Chiến lược marketing"
-                                    />
+                                <DemoRoleGuard allowedRoles={['MANAGER']}>
+                                    <ComingSoonPage title="Chiến lược marketing" />
                                 </DemoRoleGuard>
                             }
                         />

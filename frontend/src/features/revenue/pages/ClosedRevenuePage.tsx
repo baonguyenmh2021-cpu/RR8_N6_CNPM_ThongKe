@@ -9,6 +9,7 @@ import {
     Button,
     Group,
     Loader,
+    Modal,
     NumberInput,
     Paper,
     Select,
@@ -19,7 +20,11 @@ import {
 } from '@mantine/core';
 
 import RevenueNavigation from '../components/RevenueNavigation';
+
 import { getClosedMonthlyReport } from '../api/closedRevenueApi';
+import { closeMonthlyReport } from '../api/closeMonthlyReportApi';
+
+import { useDemoRole } from '../../auth/hooks/useDemoRole';
 
 import type {
     ClosedMonthlyReportResponse,
@@ -59,23 +64,35 @@ function formatDate(value: string): string {
 function getErrorMessage(error: unknown): string {
     if (axios.isAxiosError(error)) {
         if (!error.response) {
-            return 'Không kết nối được Spring Boot.';
+            return 'Không kết nối được Spring Boot. Hãy kiểm tra Backend.';
         }
 
-        if (error.response.status === 400) {
+        const status = error.response.status;
+
+        if (status === 400) {
             return 'Tháng hoặc năm không hợp lệ.';
         }
 
-        return `Backend trả về HTTP ${error.response.status}.`;
+        if (status === 403) {
+            return 'Bạn không có quyền thực hiện thao tác này.';
+        }
+
+        if (status === 409) {
+            return 'Kỳ báo cáo đã tồn tại hoặc đã được chốt trước đó.';
+        }
+
+        return `Backend trả về lỗi HTTP ${status}.`;
     }
 
     return error instanceof Error
         ? error.message
-        : 'Không thể đọc báo cáo đã chốt.';
+        : 'Không thể xử lý yêu cầu.';
 }
 
 export default function ClosedRevenuePage() {
     const now = new Date();
+
+    const { isAdmin } = useDemoRole();
 
     const [month, setMonth] = useState(
         String(now.getMonth() + 1)
@@ -99,12 +116,19 @@ export default function ClosedRevenuePage() {
     const [notFound, setNotFound] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
+    const [confirmOpened, setConfirmOpened] = useState(false);
+    const [closing, setClosing] = useState(false);
+
+    const [closeError, setCloseError] = useState<string | null>(null);
+    const [closeSuccess, setCloseSuccess] = useState<string | null>(null);
+
     const validYear =
         yearInput !== '' &&
         Number.isInteger(Number(yearInput)) &&
         Number(yearInput) >= 1 &&
         Number(yearInput) <= 9999;
 
+    // Tải báo cáo đã chốt
     useEffect(() => {
         const controller = new AbortController();
 
@@ -144,8 +168,12 @@ export default function ClosedRevenuePage() {
         return () => controller.abort();
     }, [period.year, period.month, refreshKey]);
 
+    // Tra cứu báo cáo
     function handleSearch() {
         if (!validYear) return;
+
+        setCloseError(null);
+        setCloseSuccess(null);
 
         setPeriod({
             year: Number(yearInput),
@@ -155,16 +183,59 @@ export default function ClosedRevenuePage() {
         setRefreshKey((value) => value + 1);
     }
 
+    // Admin xác nhận chốt báo cáo
+    async function handleConfirmClose() {
+        if (!isAdmin || closing || !notFound) return;
+
+        setClosing(true);
+        setCloseError(null);
+        setCloseSuccess(null);
+
+        try {
+            await closeMonthlyReport(
+                period.year,
+                period.month
+            );
+
+            setConfirmOpened(false);
+
+            setCloseSuccess(
+                `Đã chốt báo cáo tháng ${period.month}/${period.year} thành công.`
+            );
+
+            // Tải lại snapshot vừa được tạo
+            setRefreshKey((value) => value + 1);
+        } catch (err: unknown) {
+            setConfirmOpened(false);
+
+            if (
+                axios.isAxiosError(err) &&
+                err.response?.status === 409
+            ) {
+                setCloseError(
+                    'Kỳ báo cáo đã tồn tại hoặc đã được chốt trước đó. Hệ thống đang kiểm tra lại dữ liệu.'
+                );
+
+                setRefreshKey((value) => value + 1);
+            } else {
+                setCloseError(getErrorMessage(err));
+            }
+        } finally {
+            setClosing(false);
+        }
+    }
+
     return (
         <Stack gap="lg">
+            {/* Tiêu đề */}
             <Box>
                 <Title order={2} className={styles.pageTitle}>
                     Báo cáo doanh thu đã chốt
                 </Title>
 
                 <Text size="sm" c="dimmed" mt={4}>
-                    Tra cứu dữ liệu snapshot được lưu trong
-                    hệ thống theo từng tháng.
+                    Tra cứu dữ liệu snapshot được lưu trong hệ thống
+                    theo từng tháng.
                 </Text>
             </Box>
 
@@ -199,7 +270,7 @@ export default function ClosedRevenuePage() {
 
                     <Button
                         onClick={handleSearch}
-                        disabled={!validYear}
+                        disabled={!validYear || closing}
                         loading={loading}
                     >
                         Xem báo cáo
@@ -207,35 +278,86 @@ export default function ClosedRevenuePage() {
                 </Group>
             </Paper>
 
+            {/* Thông báo thao tác */}
+            {closeSuccess && (
+                <Alert color="green" title="Chốt báo cáo thành công">
+                    {closeSuccess}
+                </Alert>
+            )}
+
+            {closeError && (
+                <Alert color="red" title="Không thể chốt báo cáo">
+                    {closeError}
+                </Alert>
+            )}
+
             {/* Loading */}
             {loading && (
                 <Paper withBorder radius="sm" p="xl">
                     <Group justify="center">
                         <Loader size="sm" />
                         <Text size="sm" c="dimmed">
-                            Đang tìm báo cáo đã chốt...
+                            Đang tải báo cáo...
                         </Text>
                     </Group>
                 </Paper>
             )}
 
-            {/* Kỳ chưa có bản chốt */}
-            {notFound && !loading && (
-                <Alert color="yellow" title="Chưa có báo cáo đã chốt">
-                    Chưa tìm thấy snapshot cho tháng {period.month}/
-                    {period.year}. Đây là trạng thái tra cứu, không có
-                    thao tác ghi dữ liệu nào được thực hiện.
-                </Alert>
-            )}
-
-            {/* Lỗi API */}
+            {/* Lỗi GET */}
             {error && !loading && (
                 <Alert color="red" title="Không thể tải báo cáo">
                     {error}
                 </Alert>
             )}
 
-            {/* Snapshot có trong database */}
+            {/* Chưa có snapshot */}
+            {notFound && !loading && !error && (
+                <Paper withBorder radius="sm" p="lg">
+                    <Stack gap="md">
+                        <Group justify="space-between">
+                            <Box>
+                                <Text fw={600}>
+                                    Báo cáo tháng {period.month}/{period.year}
+                                </Text>
+
+                                <Text size="sm" c="dimmed" mt={4}>
+                                    Chưa tìm thấy báo cáo đã chốt cho kỳ này.
+                                </Text>
+                            </Box>
+
+                            <Badge color="yellow" variant="light">
+                                Chưa chốt
+                            </Badge>
+                        </Group>
+
+                        {isAdmin ? (
+                            <Alert color="blue" title="Quyền Admin">
+                                Bạn có thể thực hiện chốt báo cáo cho kỳ
+                                này sau khi kiểm tra dữ liệu nghiệp vụ.
+                            </Alert>
+                        ) : (
+                            <Alert color="gray" title="Chưa có báo cáo">
+                                Bạn có quyền xem báo cáo nhưng không có
+                                quyền thực hiện thao tác chốt.
+                            </Alert>
+                        )}
+
+                        {isAdmin && (
+                            <Group justify="flex-end">
+                                <Button
+                                    color="blue"
+                                    onClick={() => setConfirmOpened(true)}
+                                    disabled={closing}
+                                >
+                                    Chốt báo cáo
+                                </Button>
+                            </Group>
+                        )}
+                    </Stack>
+                </Paper>
+            )}
+
+            {/* Snapshot đã tồn tại */}
             {data && !loading && !error && (
                 <Stack gap="md">
                     <Paper withBorder radius="sm" p="lg">
@@ -307,6 +429,7 @@ export default function ClosedRevenuePage() {
                                 <Text size="sm" c="dimmed">
                                     Người thực hiện
                                 </Text>
+
                                 <Text size="sm" fw={500}>
                                     User ID: {data.generatedBy}
                                 </Text>
@@ -314,8 +437,9 @@ export default function ClosedRevenuePage() {
 
                             <Group justify="space-between">
                                 <Text size="sm" c="dimmed">
-                                    Thời điểm chốt
+                                    Thời gian chốt
                                 </Text>
+
                                 <Text size="sm" fw={500}>
                                     {formatDate(data.generatedAt)}
                                 </Text>
@@ -323,13 +447,59 @@ export default function ClosedRevenuePage() {
                         </Stack>
                     </Paper>
 
-                    <Alert color="blue" title="Dữ liệu snapshot">
-                        Các giá trị ở đây là báo cáo đã lưu tại thời điểm
-                        chốt, không phải doanh thu được tính lại theo
-                        thời gian thực.
-                    </Alert>
+                    {isAdmin && (
+                        <Alert color="green" title="Báo cáo đã được chốt">
+                            Kỳ báo cáo này đã có snapshot. Không thể chốt
+                            lại cùng kỳ thông qua giao diện.
+                        </Alert>
+                    )}
                 </Stack>
             )}
+
+            {/* Modal xác nhận */}
+            <Modal
+                opened={confirmOpened}
+                onClose={() => {
+                    if (!closing) {
+                        setConfirmOpened(false);
+                    }
+                }}
+                title="Xác nhận chốt báo cáo"
+                centered
+                closeOnClickOutside={!closing}
+                closeOnEscape={!closing}
+            >
+                <Stack gap="md">
+                    <Text size="sm">
+                        Bạn có chắc chắn muốn chốt báo cáo doanh thu
+                        tháng <strong>{period.month}/{period.year}</strong>?
+                    </Text>
+
+                    <Alert color="yellow" title="Lưu ý">
+                        Sau khi chốt, hệ thống sẽ lưu snapshot báo cáo
+                        vào database. Hãy kiểm tra kỹ kỳ báo cáo trước
+                        khi xác nhận.
+                    </Alert>
+
+                    <Group justify="flex-end">
+                        <Button
+                            variant="default"
+                            onClick={() => setConfirmOpened(false)}
+                            disabled={closing}
+                        >
+                            Hủy
+                        </Button>
+
+                        <Button
+                            color="blue"
+                            onClick={handleConfirmClose}
+                            loading={closing}
+                        >
+                            Xác nhận chốt
+                        </Button>
+                    </Group>
+                </Stack>
+            </Modal>
         </Stack>
     );
 }
