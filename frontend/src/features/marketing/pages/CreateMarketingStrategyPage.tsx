@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import axios from 'axios';
 
@@ -55,7 +54,8 @@ function formatDateTime(value: string): string {
 function getErrorMessage(error: unknown): string {
     if (axios.isAxiosError(error)) {
         const data = error.response?.data as
-            { message?: string } | undefined;
+            | { message?: string }
+            | undefined;
 
         if (data?.message) {
             return data.message;
@@ -237,42 +237,44 @@ export default function CreateMarketingStrategyPage() {
 
     return (
         <Stack gap="lg">
+            {/* Header: Tiêu đề và điều hướng */}
+            <Stack gap="md">
+                <Group justify="space-between" align="start">
+                    <Box>
+                        <Title order={2}>
+                            Tạo chiến lược Marketing
+                        </Title>
 
-            {/* Tiêu đề */}
-            <Group justify="space-between" align="start">
-                <Box>
-                    <Title order={2}>
-                        Tạo chiến lược Marketing
-                    </Title>
-
-                    <Text size="sm" c="dimmed" mt={5}>
-                        US-11: Manager lập kế hoạch thu hút
-                        khách hàng và dự toán ngân sách.
-                    </Text>
-                </Box>
-
-                <Group gap="xs">
-                    <Button
-                        component={Link}
-                        to="/marketing/effectiveness"
-                        variant="light"
-                    >
-                        Hiệu quả Marketing
-                    </Button>
+                    </Box>
 
                     <Badge color="blue" variant="light">
                         MANAGER
                     </Badge>
                 </Group>
-            </Group>
 
+                {/* Các nút điều hướng Marketing */}
+                <Group gap="xs" wrap="wrap">
+                    <Button variant="light">
+                        Tạo chiến lược
+                    </Button>
 
-            {/* Giải thích nghiệp vụ */}
-            <Alert color="blue" title="Thông tin nghiệp vụ">
-                Chiến lược mới được lưu ở trạng thái Planned.
-                Chi phí thực tế ban đầu bằng 0.
-                Mã chiết khấu là tùy chọn.
-            </Alert>
+                    <Button
+                        component={Link}
+                        to="/marketing/list"
+                        variant="subtle"
+                    >
+                        Danh sách chiến lược
+                    </Button>
+
+                    <Button
+                        component={Link}
+                        to="/marketing/effectiveness"
+                        variant="subtle"
+                    >
+                        Hiệu quả Marketing
+                    </Button>
+                </Group>
+            </Stack>
 
             {/* Form */}
             <Paper withBorder radius="sm" p="lg">
@@ -426,8 +428,6 @@ export default function CreateMarketingStrategyPage() {
                         >
                             Tạo chiến lược
                         </Button>
-
-                        
                     </Group>
                 </Stack>
             </Paper>
@@ -474,8 +474,8 @@ export default function CreateMarketingStrategyPage() {
                                 </Text>
 
                                 <Text size="sm">
-                                    {createdStrategy.targetSegment
-                                        || 'Không xác định'}
+                                    {createdStrategy.targetSegment ||
+                                        'Không xác định'}
                                 </Text>
                             </Box>
 
@@ -551,8 +551,8 @@ export default function CreateMarketingStrategyPage() {
                                 </Text>
 
                                 <Text size="sm">
-                                    {createdStrategy.expectedBookings
-                                        ?? 'Chưa thiết lập'}
+                                    {createdStrategy.expectedBookings ??
+                                        'Chưa thiết lập'}
                                 </Text>
                             </Box>
 

@@ -32,6 +32,7 @@ import PricePlanRoute from '../features/priceplans/pages/PricePlanRoute';
 import CreateMarketingStrategyPage from '../features/marketing/pages/CreateMarketingStrategyPage';
 
 import MarketingEffectivenessPage from '../features/marketing/pages/MarketingEffectivenessPage';
+import MarketingStrategyListPage from '../features/marketing/pages/MarketingStrategyListPage';
 
 export default function AppRouter() {
     return (
@@ -149,6 +150,16 @@ export default function AppRouter() {
                             element={
                                 <DemoRoleGuard allowedRoles={['MANAGER']}>
                                     <MarketingEffectivenessPage />
+                                </DemoRoleGuard>
+                            }
+                        />
+
+                        {/* US-13: Xem và lọc danh sách chiến lược */}
+                        <Route
+                            path="marketing/list"
+                            element={
+                                <DemoRoleGuard allowedRoles={['MANAGER']}>
+                                    <MarketingStrategyListPage />
                                 </DemoRoleGuard>
                             }
                         />

@@ -206,10 +206,6 @@ export default function MarketingEffectivenessPage() {
                         Hiệu quả chiến lược Marketing
                     </Title>
 
-                    <Text size="sm" c="dimmed" mt={5}>
-                        US-12: Phân tích doanh thu, Booking
-                        và mức độ hoàn thành mục tiêu chiến dịch.
-                    </Text>
                 </Box>
 
                 <Badge color="blue" variant="light">
@@ -218,7 +214,9 @@ export default function MarketingEffectivenessPage() {
             </Group>
 
             {/* Navigation */}
-            <Group gap="xs">
+
+            {/* Navigation */}
+            <Group gap="xs" wrap="wrap">
                 <Button
                     component={Link}
                     to="/marketing"
@@ -229,12 +227,22 @@ export default function MarketingEffectivenessPage() {
                 </Button>
 
                 <Button
+                    component={Link}
+                    to="/marketing/list"
+                    variant="subtle"
+                    size="sm"
+                >
+                    Danh sách chiến lược
+                </Button>
+
+                <Button
                     variant="light"
                     size="sm"
                 >
                     Hiệu quả Marketing
                 </Button>
             </Group>
+
 
             {/* Search */}
             <Paper withBorder radius="sm" p="lg">
