@@ -1,7 +1,7 @@
-
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import MarketingStrategyActions from '../components/MarketingStrategyActions';
 
 import {
     Alert,
@@ -77,7 +77,8 @@ function getStatusColor(status: string): string {
 function getErrorMessage(error: unknown): string {
     if (axios.isAxiosError(error)) {
         const responseData = error.response?.data as
-            { message?: string } | undefined;
+            | { message?: string }
+            | undefined;
 
         if (responseData?.message) {
             return responseData.message;
@@ -96,16 +97,22 @@ function getErrorMessage(error: unknown): string {
 }
 
 export default function MarketingStrategyListPage() {
-    const [filter, setFilter] =
-        useState<FilterValue>('ALL');
+    const [filter, setFilter] = useState<FilterValue>('ALL');
 
-    const [strategies, setStrategies] =
-        useState<MarketingStrategySummaryResponse[]>([]);
+    const [strategies, setStrategies] = useState<
+        MarketingStrategySummaryResponse[]
+    >([]);
 
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
-    const [error, setError] =
-        useState<string | null>(null);
+    const [refreshKey, setRefreshKey] = useState(0);
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+    function handleStrategyUpdated(message: string) {
+        setSuccessMessage(message);
+        setRefreshKey((previous) => previous + 1);
+    }
 
     useEffect(() => {
         const controller = new AbortController();
@@ -137,7 +144,7 @@ export default function MarketingStrategyListPage() {
         loadStrategies();
 
         return () => controller.abort();
-    }, [filter]);
+    }, [filter, refreshKey]);
 
     return (
         <Stack gap="lg">
@@ -165,10 +172,7 @@ export default function MarketingStrategyListPage() {
                     Tạo chiến lược
                 </Button>
 
-                <Button
-                    variant="light"
-                    size="sm"
-                >
+                <Button variant="light" size="sm">
                     Danh sách chiến lược
                 </Button>
 
@@ -186,9 +190,7 @@ export default function MarketingStrategyListPage() {
             <Paper withBorder radius="sm" p="lg">
                 <Group justify="space-between" align="end">
                     <Box>
-                        <Title order={4}>
-                            Bộ lọc chiến lược
-                        </Title>
+                        <Title order={4}>Bộ lọc chiến lược</Title>
 
                         <Text size="xs" c="dimmed" mt={5}>
                             Lọc danh sách theo trạng thái triển khai.
@@ -200,15 +202,19 @@ export default function MarketingStrategyListPage() {
                         data={filterOptions}
                         value={filter}
                         onChange={(value) => {
-                            setFilter(
-                                (value as FilterValue | null) ?? 'ALL'
-                            );
+                            setFilter((value as FilterValue | null) ?? 'ALL');
                         }}
                         allowDeselect={false}
                         w={280}
                     />
                 </Group>
             </Paper>
+
+            {successMessage && (
+                <Alert color="green" title="Thao tác thành công">
+                    {successMessage}
+                </Alert>
+            )}
 
             {/* Loading */}
             {loading && (
@@ -225,10 +231,7 @@ export default function MarketingStrategyListPage() {
 
             {/* Error */}
             {error && !loading && (
-                <Alert
-                    color="red"
-                    title="Không thể tải danh sách"
-                >
+                <Alert color="red" title="Không thể tải danh sách">
                     {error}
                 </Alert>
             )}
@@ -237,9 +240,7 @@ export default function MarketingStrategyListPage() {
             {!loading && !error && (
                 <Paper withBorder radius="sm" p="lg">
                     <Group justify="space-between" mb="md">
-                        <Title order={4}>
-                            Kết quả chiến lược
-                        </Title>
+                        <Title order={4}>Kết quả chiến lược</Title>
 
                         <Badge color="blue" variant="light">
                             {strategies.length} chiến lược
@@ -248,8 +249,8 @@ export default function MarketingStrategyListPage() {
 
                     {strategies.length === 0 ? (
                         <Alert color="yellow" title="Không có dữ liệu">
-                            Không tìm thấy chiến lược phù hợp với
-                            trạng thái đang chọn.
+                            Không tìm thấy chiến lược phù hợp với trạng thái
+                            đang chọn.
                         </Alert>
                     ) : (
                         <Box style={{ overflowX: 'auto' }}>
@@ -285,7 +286,8 @@ export default function MarketingStrategyListPage() {
                                             </Table.Td>
 
                                             <Table.Td>
-                                                {item.targetSegment || 'Chưa xác định'}
+                                                {item.targetSegment ||
+                                                    'Chưa xác định'}
                                             </Table.Td>
 
                                             <Table.Td>
@@ -294,7 +296,8 @@ export default function MarketingStrategyListPage() {
                                                 </Text>
 
                                                 <Text size="xs" c="dimmed">
-                                                    đến {formatDate(item.endDate)}
+                                                    đến{' '}
+                                                    {formatDate(item.endDate)}
                                                 </Text>
                                             </Table.Td>
 
@@ -306,7 +309,9 @@ export default function MarketingStrategyListPage() {
 
                                             <Table.Td>
                                                 <Badge
-                                                    color={getStatusColor(item.status)}
+                                                    color={getStatusColor(
+                                                        item.status
+                                                    )}
                                                     variant="light"
                                                 >
                                                     {item.status}
@@ -314,14 +319,23 @@ export default function MarketingStrategyListPage() {
                                             </Table.Td>
 
                                             <Table.Td>
-                                                <Button
-                                                    component={Link}
-                                                    to="/marketing/effectiveness"
-                                                    size="xs"
-                                                    variant="light"
-                                                >
-                                                    Đánh giá
-                                                </Button>
+                                                <Group gap="xs" wrap="nowrap">
+                                                    <Button
+                                                        component={Link}
+                                                        to="/marketing/effectiveness"
+                                                        size="xs"
+                                                        variant="light"
+                                                    >
+                                                        Đánh giá
+                                                    </Button>
+
+                                                    <MarketingStrategyActions
+                                                        item={item}
+                                                        onUpdated={
+                                                            handleStrategyUpdated
+                                                        }
+                                                    />
+                                                </Group>
                                             </Table.Td>
                                         </Table.Tr>
                                     ))}

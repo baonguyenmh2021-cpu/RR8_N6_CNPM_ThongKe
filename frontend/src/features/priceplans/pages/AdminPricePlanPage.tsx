@@ -19,6 +19,7 @@ import {
 } from '@mantine/core';
 
 import { reviewPricePlan } from '../api/pricePlanReviewApi';
+import { Link } from 'react-router-dom';
 
 import type {
     ReviewPricePlanResponse,
@@ -445,6 +446,17 @@ export default function AdminPricePlanPage() {
                                 ? 'Xác nhận phê duyệt'
                                 : 'Xác nhận từ chối'}
                         </Button>
+
+
+                        <Button
+                            component={Link}
+                            to="/price-plans/execution"
+                            variant="light"
+                        >
+                            Thực thi kế hoạch giá (US-15)
+                        </Button>
+
+
                     </Group>
                 </Stack>
             </Modal>

@@ -34,6 +34,9 @@ import CreateMarketingStrategyPage from '../features/marketing/pages/CreateMarke
 import MarketingEffectivenessPage from '../features/marketing/pages/MarketingEffectivenessPage';
 import MarketingStrategyListPage from '../features/marketing/pages/MarketingStrategyListPage';
 
+import PricePlanExecutionPage from '../features/priceplans/pages/PricePlanExecutionPage';
+
+
 export default function AppRouter() {
     return (
         <DemoRoleProvider>
@@ -160,6 +163,17 @@ export default function AppRouter() {
                             element={
                                 <DemoRoleGuard allowedRoles={['MANAGER']}>
                                     <MarketingStrategyListPage />
+                                </DemoRoleGuard>
+                            }
+                        />
+
+
+                        {/* US-15: Admin thực thi kế hoạch điều chỉnh giá */}
+                        <Route
+                            path="price-plans/execution"
+                            element={
+                                <DemoRoleGuard allowedRoles={['ADMIN']}>
+                                    <PricePlanExecutionPage />
                                 </DemoRoleGuard>
                             }
                         />
